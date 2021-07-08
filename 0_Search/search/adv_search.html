@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <title>Advanced Search</title>
+</head>
+
+<body>
+  <!-- Link back to Google search -->
+  <div class="topNav">
+    <a href="index.html">Google Search</a>
+  </div>
+  <div class="searchTitle">
+    <h1>Advanced Search</h1>
+  </div>
+  <div class="horizontalLine"></div>
+  <form action="https://google.com/search" class="advSearchForm">
+    <fieldset>
+      <legend>Find pages with...</legend>
+      <!-- All these words -->
+      <div class="advSearchGroup">
+        <label for="allWords">all these words:</label>
+        <input type="text" name="as_q" id="allWords">
+      </div>
+      <!-- This exact word or phrase -->
+      <div class="advSearchGroup">
+        <label for="exactWords">this exact word or phrase:</label>
+        <input type="text" name="as_epq" id="exactWords">
+      </div>
+      <!-- Any of these words -->
+      <div class="advSearchGroup">
+        <label for="anyWords">any of these words:</label>
+        <input type="text" name="as_oq" id="anyWords">
+      </div>
+      <!-- None of these words -->
+      <div class="advSearchGroup">
+        <label for="noneWords">none of these words:</label>
+        <input type="text" name="as_eq" id="noneWords">
+      </div>
+      <input type="submit" value="Advanced Search" class="advSearchBtn">
+    </fieldset>
+  </form>
+  <div class="horizontalLine"></div>
+</body>
+
+</html>
