@@ -4,5 +4,6 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("wiki/", views.wiki, name="wiki")
+    # Pass title to wiki function to read markdown file
+    path("wiki/<str:title>", views.wiki, name="wiki")
 ]
