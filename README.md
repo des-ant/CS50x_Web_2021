@@ -1,1 +1,1 @@
-# CS50x_Web_2021
+# CS50’s Web Programming with Python and JavaScript
