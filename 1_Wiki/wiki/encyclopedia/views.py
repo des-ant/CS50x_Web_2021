@@ -1,3 +1,4 @@
+from markdown2 import Markdown
 from django.http import HttpResponse
 from django.shortcuts import render
 
@@ -12,11 +13,12 @@ def index(request):
 def wiki(request, title):
     # Read markdown file
     md_file = util.get_entry(title)
-    # # Get first line from markdown file
-    # first_line = css_md.partition('\n')[0]
-    # # Remove first two characters (markdown heading)
-    # heading = first_line[2:]
-    # print(heading)
     if md_file is None:
-        return HttpResponse("Requested page not found")
-    return HttpResponse(md_file)
+        # Return error page with requested title
+        return render(request, "encyclopedia/error.html", {
+            "title": title
+        })
+    # Convert markdown to html and send data to template
+    return render(request, "encyclopedia/entry.html", {
+        "entry": Markdown().convert(md_file)
+    })
