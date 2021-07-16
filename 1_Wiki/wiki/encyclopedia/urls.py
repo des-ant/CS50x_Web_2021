@@ -10,5 +10,7 @@ urlpatterns = [
     # Url for random encyclopedia entry
     path("random/", views.random_entry, name="random"),
     # Url for creating new encyclopedia entry
-    path("newentry/", views.new_entry, name="newentry")
+    path("newentry/", views.new_entry, name="newentry"),
+    # Url for editing encyclopedia entry
+    path("edit/<str:title>", views.edit_entry, name="editentry")
 ]

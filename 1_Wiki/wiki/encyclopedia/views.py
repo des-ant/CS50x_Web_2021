@@ -14,8 +14,11 @@ def index(request):
         "entries": util.list_entries()
     })
 
-# Function to render encyclopedia entries to html page
+
 def wiki(request, title):
+    """
+    Renders encyclopedia entries to html page
+    """
     # Read markdown file
     md_file = util.get_entry(title)
     if md_file is None:
@@ -25,22 +28,32 @@ def wiki(request, title):
         })
     # Convert markdown to html and send data to template
     return render(request, "encyclopedia/entry.html", {
+        "title": title,
         "entry": Markdown().convert(md_file)
     })
 
-# Function to take user to random encyclopedia entry
+
 def random_entry(request):
+    """
+    Renders random encyclopedia entry
+    """
     # Get random encyclopedia entry
     random_entry = choice(util.list_entries())
     return wiki(request, random_entry)
 
-# Django form, inherits from forms.form
+
 class new_entry_form(forms.Form):
+    """
+    Django form, inherits from forms.form
+    """
     title = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}), label="Title")
     content = forms.CharField(widget=forms.Textarea(attrs={"class": "form-control"}), label="Content")
 
-# Function to create new entry
+
 def new_entry(request):
+    """
+    Create new encyclopedia entry
+    """
     # If new entry being submitted
     if request.method == "POST":
         form = new_entry_form(request.POST)
@@ -69,4 +82,34 @@ def new_entry(request):
     # Render empty form if received get request
     return render(request, "encyclopedia/newentry.html", {
         "form": new_entry_form()
+    })
+
+
+def edit_entry(request, title):
+    """
+    Edit encyclopedia entry
+    """
+    # Read markdown file
+    md_file = util.get_entry(title)
+    if md_file is None:
+        # Return error page with requested title
+        return render(request, "encyclopedia/error.html", {
+            "title": title
+        })
+
+    # Split markdown file into title and content
+    md_partition = md_file.partition('\n')
+    # Get first line from markdown file
+    first_line = md_partition[0]
+    # Remove first two characters (markdown heading)
+    heading = first_line[2:]
+    # Content is in partition after newline
+    content_section = md_partition[2]
+    # Get page content from markdown file by removing first and last lines
+    content = '\n'.join(content_section.split('\n')[1:-1])
+    # Populate form with encyclopedia entry content
+    return render(request, "encyclopedia/editentry.html", {
+        "title": title,
+        "heading": heading,
+        "content": content
     })
