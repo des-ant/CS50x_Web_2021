@@ -44,7 +44,7 @@ def random_entry(request):
 
 class new_entry_form(forms.Form):
     """
-    Django form, inherits from forms.form
+    Django new entry form, inherits from forms.Form
     """
     title = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}), label="Title")
     content = forms.CharField(widget=forms.Textarea(attrs={"class": "form-control"}), label="Content")
@@ -61,8 +61,8 @@ def new_entry(request):
         if form.is_valid():
             title = form.cleaned_data["title"]
             content = form.cleaned_data["content"]
-            # Add markdown title to content
-            content = f"# {title}\n{content}"
+            # Add markdown title to content, add newline before and after content
+            content = f"# {title}\n\n{content}\n"
             # If entry exists, present error message
             if util.get_entry(title):
                 messages.error(request, "Error: Page already exists")
@@ -83,6 +83,13 @@ def new_entry(request):
     return render(request, "encyclopedia/newentry.html", {
         "form": new_entry_form()
     })
+
+
+class edit_entry_form(forms.Form):
+    """
+    Django edit entry form, inherits from forms.Form
+    """
+    content = forms.CharField(widget=forms.Textarea(attrs={"class": "form-control"}), label="Content")
 
 
 def edit_entry(request, title):
@@ -107,9 +114,28 @@ def edit_entry(request, title):
     content_section = md_partition[2]
     # Get page content from markdown file by removing first and last lines
     content = '\n'.join(content_section.split('\n')[1:-1])
+
+    # If edited entry being submitted
+    if request.method == "POST":
+        form = edit_entry_form(request.POST)
+        # Check for valid input
+        if form.is_valid():
+            content = form.cleaned_data["content"]
+            # Add markdown title to content, add newline before and after content
+            content = f"# {heading}\n\n{content}\n"
+            # Save entry to disk and take user to new entry's page
+            util.save_entry(title, content)
+            return HttpResponseRedirect(reverse("encyclopedia:wiki", args=[title]))
+        # Invalid input, send back existing form data
+        else:
+            return render(request, "encyclopedia/editentry.html", {
+                "title": title,
+                "heading": heading,
+                "form": form 
+            })
     # Populate form with encyclopedia entry content
     return render(request, "encyclopedia/editentry.html", {
         "title": title,
         "heading": heading,
-        "content": content
+        "form": edit_entry_form(initial={"content": content})
     })
