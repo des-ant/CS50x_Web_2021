@@ -5,20 +5,34 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Create New Page</h1>
-    {% if messages %}
-    {% for message in messages %}
-        <div>
-            <h1 style="color: red;">
-                {{ message }}
-            </h1>
+<div class="container">
+    <div class="row">
+        <div class="col-10">
+            <h1>Create New Page</h1>
         </div>
-    {% endfor %}
-    {% endif %}
-    <form action="{% url 'encyclopedia:newentry' %}" method="POST">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit">
-    </form>
+    </div>
+    <div class="row">
+        <div class="col-10">
+            {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger" role="alert">
+                        {{ message }}
+                </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-10">
+            <form action="{% url 'encyclopedia:newentry' %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form }}
+                </div>
+            </form>
+        </div>
+    </div>
+    <input type="submit" class="btn btn-primary">
+</div>
 
 {% endblock %}

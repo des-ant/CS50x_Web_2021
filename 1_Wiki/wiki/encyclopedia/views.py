@@ -36,8 +36,8 @@ def random_entry(request):
 
 # Django form, inherits from forms.form
 class new_entry_form(forms.Form):
-    title = forms.CharField(label="Title")
-    content = forms.CharField(widget=forms.Textarea, label="Content")
+    title = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}), label="Title")
+    content = forms.CharField(widget=forms.Textarea(attrs={"class": "form-control"}), label="Content")
 
 # Function to create new entry
 def new_entry(request):
