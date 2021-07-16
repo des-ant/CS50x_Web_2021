@@ -10,8 +10,33 @@ from . import util
 
 
 def index(request):
+    """
+    Show list of encyclopedia entries, filtered by search queries
+    """
+    # Get query from search
+    query = request.GET.get('q', '')
+    # If text was present in search
+    if not query == '':
+        # Get full list of entries
+        full_list = util.list_entries()
+        filtered_list = []
+        # Iterate through list of entries
+        for title in full_list:
+            # If query matches name of entry, redirect user to entry page
+            if title == query:
+                return wiki(request, title)
+            # Add enclopedia entries with query as substring to filtered list
+            if query in title:
+                filtered_list.append(title)
+        # Return list of filtered titles if no exact match found
+        return render(request, "encyclopedia/index.html", {
+            "entries": filtered_list,
+            "heading": "Pages Found"
+        })
+    # Return full list of entries if no search performed
     return render(request, "encyclopedia/index.html", {
-        "entries": util.list_entries()
+        "entries": util.list_entries(),
+        "heading": "All Pages"
     })
 
 
