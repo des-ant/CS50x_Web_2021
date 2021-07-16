@@ -5,6 +5,15 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Error: {{ title }} Not Found</h1>
+    <!-- <h1>Error: {{ title }} Not Found</h1> -->
+    <div class="container">
+        <div class="row">
+            <div class="col-10 text-center">
+                <h1 class="display-1 d-block">404</h1>
+                <div class="mb-4 lead">The page <span class="badge">{{ title }}</span> was not found.</div>
+                <a href="{% url 'encyclopedia:index' %}" class="btn btn-link">Back to Home</a>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
