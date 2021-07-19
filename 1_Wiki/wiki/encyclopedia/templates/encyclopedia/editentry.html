@@ -1,0 +1,30 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Encyclopedia
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-10">
+            <h1>{{ heading }}</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-10">
+            <form action="{% url 'encyclopedia:editentry' title=title %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form }}
+                </div>
+                <a href="{% url 'encyclopedia:wiki' title=title %}" class="btn
+                btn-default">Cancel</a>
+                <input type="submit" class="btn btn-primary float-right"
+                value="Save Changes">
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
