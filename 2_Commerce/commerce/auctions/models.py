@@ -3,56 +3,52 @@ from django.db import models
 
 
 class User(AbstractUser):
-    # Listings
-    listings = models.ForeignKey(Listing, related_name="creator")
-    # Bids
-    bids = models.ForeignKey(Bids, related_name="bidder")
-    # Comments
-    comments = models.ForeignKey(Comments, related_name="author")
+    listings = models.ForeignKey(Listing, blank=True, related_name="creator")
+    bids = models.ForeignKey(Bid, blank=True, related_name="bidder")
+    comments = models.ForeignKey(Comment, blank=True, related_name="author")
+    watchlist = models.ManyToManyField(Listing, blank=True, related_name="watchers")
 
     def __str__(self):
-        return f"{self.id} {self.listings} {self.bids} {self.comments}"
+        return f"{self.id} {self.listings} {self.bids} {self.comments} {self.watchlist}"
 
 # Model for auction listing
 class Listing(models.Model):
-    # User
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
-    # Title
     title = models.CharField(max_length=64)
-    # Description
     description = models.TextField()
-    # Starting Bid
-    bid = models.DecimalField(decimal_places=2)
-    # Image (Optional)
     image = models.ImageField()
-    # Category
-    # Date
-    date = models.DateTimeField()
+    category = models.ForeignKey(Category, related_name="catgory_items")
+    date_created = models.DateTimeField()
+    is_active = models.BooleanField()
+    bids = models.ForeignKey(Bid, related_name="bid_listing")
     
     def __str__(self):
-        return f"{self.id}\n{self.title}\nDescription: {self.description}\nImage: {self.image}\nDate: {self.date}"
+        return f"{self.id} {self.creator} {self.title} {self.description} {self.image}"
+        f"{self.category} {self.date_created} {self.is_active} {self.bids}"
 
 # Model for bids
-class Bids(models.Model):
+class Bid(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_bids")
-    # Listing
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listing_bids")
-    # Price
-    bid = models.DecimalField(decimal_places=2)
-    # Date
+    price = models.DecimalField(decimal_places=2)
     date = models.DateTimeField()
 
     def __str__(self):
-        return f"{self.id}\n{self.bid}\n{self.date}"
+        return f"{self.id} {self.user} {self.listing} {self.price} {self.date}"
 
 # Model for comments made on auction listings
-class Comments(models.Model):
+class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_comments")
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listing_comments")
-    # Comment
     comment = models.TextField()
-    # Date
     date = models.DateTimeField()
 
     def __str__(self):
-        return f"{self.id}\n{self.comment}\n{self.date}"
+        return f"{self.id} {self.listing} {self.comment} {self.date}"
+
+# Allow listings to be sorted by category
+class Category(models.Model):
+    category = models.CharField(max_length=64)
+
+    def __str__(self):
+        return f"{self.category}"
