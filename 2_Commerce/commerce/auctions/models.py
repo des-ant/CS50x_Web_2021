@@ -20,7 +20,8 @@ class Listing(models.Model):
     category = models.ForeignKey(Category, related_name="catgory_items")
     date_created = models.DateTimeField()
     is_active = models.BooleanField()
-    bids = models.ForeignKey(Bid, related_name="bid_listing")
+    price = models.DecimalField(decimal_places=2)
+    bids = models.ForeignKey(Bid, blank=True, related_name="bid_listing")
     
     def __str__(self):
         return f"{self.id} {self.creator} {self.title} {self.description} {self.image}"
