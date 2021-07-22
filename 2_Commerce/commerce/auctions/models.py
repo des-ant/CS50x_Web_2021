@@ -25,7 +25,6 @@ class Listing(models.Model):
     date_created = models.DateTimeField()
     is_active = models.BooleanField()
     price = models.DecimalField(max_digits=19, decimal_places=2)
-    watchers = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, related_name="watchlist")
     
     def __str__(self):
         return f"{self.id} {self.creator} {self.title} {self.description} {self.image}"
@@ -51,3 +50,7 @@ class Comment(models.Model):
     def __str__(self):
         return f"{self.id} {self.listing} {self.comment} {self.date}"
 
+# Model for watchlist, allows users to save listings
+class Watchlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="watchlist")
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="watchers")
