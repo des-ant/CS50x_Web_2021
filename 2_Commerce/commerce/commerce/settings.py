@@ -124,3 +124,6 @@ STATIC_URL = '/static/'
 
 # Autocreate primary keys
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+# Place uploaded images from models.ImageField to static directory
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')

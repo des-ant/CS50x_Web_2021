@@ -6,7 +6,7 @@ class User(AbstractUser):
     pass
 
     def __str__(self):
-        return f"{self.id}"
+        return f"{self.id} {self.username} {self.first_name}"
 
 # Allow listings to be sorted by category
 class Category(models.Model):
@@ -20,7 +20,7 @@ class Listing(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
     title = models.CharField(max_length=64)
     description = models.TextField()
-    image = models.ImageField()
+    image = models.ImageField(null=True, blank=True)
     category = models.ForeignKey(Category, blank=True, on_delete=models.CASCADE, related_name="catgory_items")
     date_created = models.DateTimeField()
     is_active = models.BooleanField()
