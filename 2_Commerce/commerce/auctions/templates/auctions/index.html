@@ -5,12 +5,19 @@
 
     {% for listing in listings %}
         {% if listing.is_active %}
-        <div>
-            <img src="/{{ listing.image }}" alt="{{ listing.title }}"
-            class="img-thumbnail">
-            <h4>{{ listing.title }}</h4>
-            <p><b>Price:</b> ${{ listing.price }}</p>
-            <p class="text-secondary"><small>Created {{ listing.date_created }}</small></p>
+        <div class="container">
+            <div class="row">
+                <div class="col-4">
+                    <img src="/{{ listing.image }}" alt="{{ listing.title }}"
+                    class="img-thumbnail">
+                </div>
+                <div class="col-6">
+                    <h4>{{ listing.title }}</h4>
+                    <p><b>Price:</b> ${{ listing.price }}</p>
+                    <p>{{ listing.description }}</p>
+                    <p class="text-secondary"><small>Created {{ listing.date_created }}</small></p>
+                </div>
+            </div>
         </div>
         {% endif %}
     {% endfor %}
