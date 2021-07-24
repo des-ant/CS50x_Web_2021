@@ -20,7 +20,7 @@ class Listing(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
     title = models.CharField(max_length=64)
     description = models.TextField()
-    image = models.ImageField(null=True, blank=True)
+    image = models.ImageField(null=True, blank=True, upload_to="auctions")
     category = models.ForeignKey(Category, blank=True, on_delete=models.CASCADE, related_name="catgory_items")
     date_created = models.DateTimeField()
     is_active = models.BooleanField()
