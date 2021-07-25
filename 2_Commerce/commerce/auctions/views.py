@@ -67,12 +67,21 @@ def register(request):
         return render(request, "auctions/register.html")
 
 
+# View for creating new listing
 def new_listing(request):
     if request.method == "POST":
         print(request.POST)
-    category_form = NewCategoryForm()
     listing_form = NewListingForm()
     return render(request, "auctions/newlisting.html", {
-        "category_form": category_form,
         "listing_form": listing_form
+    })
+
+
+# View for creating new category
+def new_category(request):
+    if request.method == "POST":
+        print(request.POST)
+    category_form = NewCategoryForm()
+    return render(request, "auctions/newcategory.html", {
+        "category_form": category_form
     })

@@ -24,7 +24,7 @@
                 {% csrf_token %}
                 <div class="form-group">
                     {{ listing_form }}
-                    {{ category_form }}
+                    <a href="{% url 'auctions:new_category' %}">Create New Category</a>
                 </div>
                 <input type="submit" class="btn btn-primary">
             </form>
