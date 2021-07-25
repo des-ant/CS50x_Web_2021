@@ -8,8 +8,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-4">
+                    {% if listing.image %}
                     <img src="{{ listing.image.url }}" alt="{{ listing.title }}"
                     class="img-thumbnail size-200">
+                    {% endif %}
                 </div>
                 <div class="col-6">
                     <h4>{{ listing.title }}</h4>

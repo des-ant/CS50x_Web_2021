@@ -27,8 +27,8 @@ class Listing(models.Model):
     price = models.DecimalField(max_digits=19, decimal_places=2)
     
     def __str__(self):
-        return f"{self.id} {self.creator} {self.title} {self.description} {self.image}"
-        f"{self.category} {self.date_created} {self.is_active} {self.watchers}"
+        return (f"{self.id} {self.creator} {self.title} {self.description} {self.image}"
+        f"{self.category} {self.date_created} {self.is_active} {self.watchers}")
 
 # Model for bids
 class Bid(models.Model):
