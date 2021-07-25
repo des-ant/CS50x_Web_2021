@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from .models import User, Listing
-from .forms import NewListingForm
+from .forms import NewCategoryForm, NewListingForm
 
 
 def index(request):
@@ -70,7 +70,9 @@ def register(request):
 def new_listing(request):
     if request.method == "POST":
         print(request.POST)
-    form = NewListingForm()
+    category_form = NewCategoryForm()
+    listing_form = NewListingForm()
     return render(request, "auctions/newlisting.html", {
-        "form": form
+        "category_form": category_form,
+        "listing_form": listing_form
     })

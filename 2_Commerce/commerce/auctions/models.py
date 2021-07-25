@@ -10,10 +10,10 @@ class User(AbstractUser):
 
 # Allow listings to be sorted by category
 class Category(models.Model):
-    category = models.CharField(max_length=64)
+    name = models.CharField(max_length=64)
 
     def __str__(self):
-        return f"{self.category}"
+        return f"{self.name}"
 
 # Model for auction listing
 class Listing(models.Model):
@@ -21,7 +21,7 @@ class Listing(models.Model):
     title = models.CharField(max_length=64)
     description = models.TextField()
     image = models.ImageField(null=True, blank=True, upload_to="auctions")
-    category = models.ForeignKey(Category, blank=True, on_delete=models.CASCADE, related_name="catgory_items")
+    category = models.ForeignKey(Category, blank=True, on_delete=models.CASCADE, related_name="category_items")
     date_created = models.DateTimeField()
     is_active = models.BooleanField()
     price = models.DecimalField(max_digits=19, decimal_places=2)

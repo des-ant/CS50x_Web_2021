@@ -23,7 +23,8 @@
             <form action="{% url 'auctions:new_listing' %}" method="POST">
                 {% csrf_token %}
                 <div class="form-group">
-                    {{ form }}
+                    {{ listing_form }}
+                    {{ category_form }}
                 </div>
                 <input type="submit" class="btn btn-primary">
             </form>
