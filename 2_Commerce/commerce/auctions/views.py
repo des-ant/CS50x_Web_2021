@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Listing
+from .models import User, Listing, Category
 from .forms import NewCategoryForm, NewListingForm
 
 
@@ -72,16 +72,10 @@ def new_listing(request):
     if request.method == "POST":
         print(request.POST)
     listing_form = NewListingForm()
-    return render(request, "auctions/newlisting.html", {
-        "listing_form": listing_form
-    })
-
-
-# View for creating new category
-def new_category(request):
-    if request.method == "POST":
-        print(request.POST)
     category_form = NewCategoryForm()
-    return render(request, "auctions/newcategory.html", {
-        "category_form": category_form
+    all_categories = Category.objects.all
+    return render(request, "auctions/newlisting.html", {
+        "listing_form": listing_form,
+        "category_form": category_form,
+        "all_categories": all_categories
     })
