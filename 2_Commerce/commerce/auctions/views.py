@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -70,6 +71,7 @@ def register(request):
 
 
 # View for creating new listing
+@login_required
 def new_listing(request):
     all_categories = Category.objects.all
     listing_form = NewListingForm()
