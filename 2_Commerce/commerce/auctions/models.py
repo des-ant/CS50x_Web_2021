@@ -25,10 +25,11 @@ class Listing(models.Model):
     date_created = models.DateTimeField()
     is_active = models.BooleanField()
     price = models.DecimalField(max_digits=19, decimal_places=2)
+    highest_bid = models.ForeignKey('Bid', null=True, blank=True, on_delete=models.CASCADE, related_name="winners")
     
     def __str__(self):
         return (f"{self.id} {self.creator} {self.title} {self.description} {self.image}"
-        f"{self.category} {self.date_created} {self.is_active} {self.watchers}")
+        f"{self.category} {self.date_created} {self.is_active} {self.price} {self.highest_bid}")
 
 # Model for bids
 class Bid(models.Model):
