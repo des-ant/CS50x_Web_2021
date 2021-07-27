@@ -8,7 +8,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
-from .models import User, Listing, Category, Watchlist
+from .models import User, Listing, Category
 from .forms import NewCategoryForm, NewListingForm, NewBidForm
 
 
@@ -136,7 +136,7 @@ def listing(request, listing_id):
         highest_bid_price = highest_bid.price
     # Check if listing is part of user's watchlist
     watching = False
-    if Watchlist.objects.filter(user=request.user, listing=listing_obj).exists():
+    if request.user.watchlist.filter(pk=listing_id):
         watching = True
     context = {
         "listing": listing_obj,
@@ -179,12 +179,12 @@ def watch(request, listing_id):
     # Return 404 page if listing not found
     listing_obj = get_object_or_404(Listing, pk=listing_id)
     # Remove listing if found in watchlist
-    watchlisting =  Watchlist.objects.filter(user=request.user, listing=listing_obj).first()
+    watchlisting = request.user.watchlist.filter(pk=listing_id).first()
     if watchlisting:
         watchlisting.delete()
     else:
         # Add to watchlist if not already added
-        Watchlist.objects.create(user=request.user, listing=listing_obj)
+        request.user.watchlist.add(listing_obj)
     return listing(request, listing_id)
 
 
