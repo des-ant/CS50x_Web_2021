@@ -53,6 +53,15 @@
                 </div>
                 <input type="submit" class="btn btn-primary" value="Place Bid">
             </form>
+            <a href="{% url 'auctions:watch' listing_id=listing.id %}"
+            class="btn btn-light">
+            {% if watching %}
+            Remove from
+            {% else %}
+            Add to
+            {% endif %}
+             watchlist
+            </a>
         </div>
     </div>
     <div class="row">

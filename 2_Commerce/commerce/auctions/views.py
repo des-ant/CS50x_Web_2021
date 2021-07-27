@@ -8,7 +8,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
-from .models import User, Listing, Category
+from .models import User, Listing, Category, Watchlist
 from .forms import NewCategoryForm, NewListingForm, NewBidForm
 
 
@@ -75,6 +75,7 @@ def register(request):
 @login_required
 def new_listing(request):
     all_categories = Category.objects.all
+    # Load forms
     listing_form = NewListingForm()
     category_form = NewCategoryForm()
     context = {
@@ -133,12 +134,17 @@ def listing(request, listing_id):
     if highest_bid:
         highest_bidder = highest_bid.user
         highest_bid_price = highest_bid.price
+    # Check if listing is part of user's watchlist
+    watching = False
+    if Watchlist.objects.filter(user=request.user, listing=listing_obj).exists():
+        watching = True
     context = {
         "listing": listing_obj,
         "bid_form": bid_form,
         "bidder_count": bidder_count,
         "highest_bidder": highest_bidder,
-        "highest_bid_price": highest_bid_price
+        "highest_bid_price": highest_bid_price,
+        "watching": watching
     }
     if request.method == "POST":
         bid_form = NewBidForm(request.POST)
@@ -166,3 +172,30 @@ def listing(request, listing_id):
         else:
             return render(request, "auctions/listing.html", context)
     return render(request, "auctions/listing.html", context)
+
+
+# Add or remove from watchlist
+def watch(request, listing_id):
+    # Return 404 page if listing not found
+    listing_obj = get_object_or_404(Listing, pk=listing_id)
+    # Remove listing if found in watchlist
+    watchlisting =  Watchlist.objects.filter(user=request.user, listing=listing_obj).first()
+    if watchlisting:
+        watchlisting.delete()
+    else:
+        # Add to watchlist if not already added
+        Watchlist.objects.create(user=request.user, listing=listing_obj)
+    return listing(request, listing_id)
+
+
+def watchlist(request):
+    # Show all listings from user's watchlist
+    watchlist_id_set = request.user.watchlist.all().values_list("listing", flat=True)
+    print(watchlist_id_set)
+    # watchlistings = Listing.objects.filter(pk__in=watchlist_id_set)
+    # print(watchlistings)
+    return index(request)
+    # context = {
+    #     "listings": watchlistings
+    # }
+    # return render(request, "auctions/index.html", context)
