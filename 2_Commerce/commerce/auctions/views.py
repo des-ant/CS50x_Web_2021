@@ -146,8 +146,11 @@ def listing(request, listing_id):
         if bid_form.is_valid():
             # Make sure bid price is higher than current bid
             bid_price = bid_form.cleaned_data["price"]
-            starting_price = listing_obj.price
-            if bid_price <= starting_price:
+            min_bid = listing_obj.price
+            # Compare to starting price if no bid placed yet
+            if listing_obj.highest_bid:
+                min_bid = listing_obj.highest_bid.price
+            if bid_price <= min_bid:
                 messages.error(request, "Error: bid must be higher than current price")
                 return render(request, "auctions/listing.html", context)
             # Bid is valid, autofill attributes then save new bid
@@ -156,6 +159,9 @@ def listing(request, listing_id):
             new_bid_object.listing = listing_obj
             new_bid_object.date = datetime.now()
             new_bid_object.save()
+            # Update highest bid on listing object
+            listing_obj.highest_bid = new_bid_object
+            listing_obj.save()
             return HttpResponseRedirect(reverse("auctions:listing", args=[listing_id]))
         else:
             return render(request, "auctions/listing.html", context)

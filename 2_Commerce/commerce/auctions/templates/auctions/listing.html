@@ -16,8 +16,11 @@
     <div class="row">
         <div class="col-10">
             <h2>$
-                <!-- {% if listing.highest_bid %} -->
+                {% if listing.highest_bid %}
+                {{ listing.highest_bid.price }}
+                {% else %}
                 {{ listing.price }}
+                {% endif %}
             </h2>
             <p>
                 {{ bidder_count }}
@@ -31,7 +34,7 @@
                     {% if highest_bidder.id == user.id %}
                     Your
                     {% else %}
-                    {{ highest_bidder }}'s
+                    {{ highest_bidder.username }}'s
                     {% endif %}
                      bid is the the current bid.
                 {% endif %}

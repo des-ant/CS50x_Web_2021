@@ -28,7 +28,7 @@ class Listing(models.Model):
     highest_bid = models.ForeignKey('Bid', null=True, blank=True, on_delete=models.CASCADE, related_name="winners")
     
     def __str__(self):
-        return (f"{self.id} {self.creator} {self.title} {self.description} {self.image}"
+        return (f"{self.id} {self.creator} {self.title} {self.description} {self.image} "
         f"{self.category} {self.date_created} {self.is_active} {self.price} {self.highest_bid}")
 
 # Model for bids
