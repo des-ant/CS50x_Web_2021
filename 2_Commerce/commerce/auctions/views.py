@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
+from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
@@ -15,7 +16,9 @@ from .forms import NewCategoryForm, NewListingForm, NewBidForm
 def index(request):
     # Show active listings on homepage
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.all()
+        "listings": Listing.objects.all(),
+        "title": "Active Listings",
+        "empty": "No active listings to display"
     })
 
 
@@ -195,3 +198,24 @@ def watchlist(request):
         "listings": watchlistings
     }
     return render(request, "auctions/watchlist.html", context)
+
+
+def categories(request):
+    all_categories = Category.objects.annotate(num_items=Count("category_items"))
+    context = {
+        "categories": all_categories
+    }
+    return render(request, "auctions/categories.html", context)
+
+
+def category(request, category_id):
+    # Return 404 page if category not found
+    category_obj = get_object_or_404(Category, pk=category_id)
+    # Filter listings by category
+    listings = category_obj.category_items.all()
+    context = {
+        "listings": listings,
+        "title": f"Active Listings for Category: {category_obj.name}",
+        "empty": f"No active listings to display for Category: {category_obj.name}"
+    }
+    return render(request, "auctions/index.html", context)
