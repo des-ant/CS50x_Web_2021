@@ -16,6 +16,30 @@
     <div class="row">
         <div class="col-10">
             <h2>${{ listing.price }}</h2>
+            <p>
+                {{ bidder_count }}
+                {% if bidder_count == 1 %}
+                 bid
+                {% else %}
+                 bids
+                {% endif %}
+                 so far.
+                {% if highest_bidder %}
+                    {% if highest_bidder.id == user.id %}
+                    Your
+                    {% else %}
+                    {{ highest_bidder }}'s
+                    {% endif %}
+                     bid is the the current bid.
+                {% endif %}
+            </p>
+            <form action="{% url 'auctions:listing' listing_id=listing.id %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ bid_form }}
+                </div>
+                <input type="submit" class="btn btn-primary" value="Place Bid">
+            </form>
         </div>
     </div>
     <div class="row">

@@ -8,7 +8,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
 from .models import User, Listing, Category
-from .forms import NewCategoryForm, NewListingForm
+from .forms import NewCategoryForm, NewListingForm, NewBidForm
 
 
 def index(request):
@@ -122,7 +122,23 @@ def new_listing(request):
 def listing(request, listing_id):
     # Return 404 page if listing not found
     listing_obj = get_object_or_404(Listing, pk=listing_id)
+    # Get bid form and pass it to html template
+    bid_form = NewBidForm()
+    bidder_count = listing_obj.listing_bids.count()
+    # Get information about highest bid
+    highest_bid = listing_obj.highest_bid
+    highest_bidder = None
+    highest_bid_price = None
+    if highest_bid:
+        highest_bidder = highest_bid.user
+        highest_bid_price = highest_bid.price
     context = {
-        "listing": listing_obj
+        "listing": listing_obj,
+        "bid_form": bid_form,
+        "bidder_count": bidder_count,
+        "highest_bidder": highest_bidder,
+        "highest_bid_price": highest_bid_price
     }
+    if request.method == "POST":
+        pass
     return render(request, "auctions/listing.html", context)
