@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
@@ -140,5 +141,22 @@ def listing(request, listing_id):
         "highest_bid_price": highest_bid_price
     }
     if request.method == "POST":
-        pass
+        bid_form = NewBidForm(request.POST)
+        # Check bid form data is valid
+        if bid_form.is_valid():
+            # Make sure bid price is higher than current bid
+            bid_price = bid_form.cleaned_data["price"]
+            starting_price = listing_obj.price
+            if bid_price <= starting_price:
+                messages.error(request, "Error: bid must be higher than current price")
+                return render(request, "auctions/listing.html", context)
+            # Bid is valid, autofill attributes then save new bid
+            new_bid_object = bid_form.save(commit=False)
+            new_bid_object.user = request.user
+            new_bid_object.listing = listing_obj
+            new_bid_object.date = datetime.now()
+            new_bid_object.save()
+            return HttpResponseRedirect(reverse("auctions:listing", args=[listing_id]))
+        else:
+            return render(request, "auctions/listing.html", context)
     return render(request, "auctions/listing.html", context)
