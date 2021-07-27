@@ -181,7 +181,7 @@ def watch(request, listing_id):
     # Remove listing if found in watchlist
     watchlisting = request.user.watchlist.filter(pk=listing_id).first()
     if watchlisting:
-        watchlisting.delete()
+        request.user.watchlist.remove(watchlisting)
     else:
         # Add to watchlist if not already added
         request.user.watchlist.add(listing_obj)
@@ -190,12 +190,8 @@ def watch(request, listing_id):
 
 def watchlist(request):
     # Show all listings from user's watchlist
-    watchlist_id_set = request.user.watchlist.all().values_list("listing", flat=True)
-    print(watchlist_id_set)
-    # watchlistings = Listing.objects.filter(pk__in=watchlist_id_set)
-    # print(watchlistings)
-    return index(request)
-    # context = {
-    #     "listings": watchlistings
-    # }
-    # return render(request, "auctions/index.html", context)
+    watchlistings = request.user.watchlist.all()
+    context = {
+        "listings": watchlistings
+    }
+    return render(request, "auctions/watchlist.html", context)
