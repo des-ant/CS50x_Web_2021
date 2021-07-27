@@ -14,7 +14,7 @@
                     {% endif %}
                 </div>
                 <div class="col-6">
-                    <h4>{{ listing.title }}</h4>
+                    <a href="{% url 'auctions:listing' listing_id=listing.id %}"><h4>{{ listing.title }}</h4></a>
                     <p><b>Price:</b> ${{ listing.price }}</p>
                     <p>{{ listing.description }}</p>
                     <p class="text-secondary"><small>Created {{ listing.date_created }}</small></p>

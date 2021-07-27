@@ -1,0 +1,31 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-10">
+            <h1>Listing {{ listing.title }}</h1>
+            {% if listing.image %}
+            <img src="{{ listing.image.url }}" alt="{{ listing.title }}"
+            class="img-thumbnail size-400">
+            {% endif %}
+            <p>{{ listing.description }}</p>
+            <p class="text-secondary"><small>Created {{ listing.date_created }}</small></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-10">
+            <h2>${{ listing.price }}</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-10">
+            <h3>Details</h3>
+            <ul>
+                <li>Listed by: {{ listing.creator.username }}</li>
+                <li>Category: {{ listing.category.name }}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

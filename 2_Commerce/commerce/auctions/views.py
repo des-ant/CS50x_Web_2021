@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
 from .models import User, Listing, Category
@@ -116,3 +116,13 @@ def new_listing(request):
         else:
             return render(request, "auctions/newlisting.html", context)
     return render(request, "auctions/newlisting.html", context)
+
+
+# View for each individual listing
+def listing(request, listing_id):
+    # Return 404 page if listing not found
+    listing_obj = get_object_or_404(Listing, pk=listing_id)
+    context = {
+        "listing": listing_obj
+    }
+    return render(request, "auctions/listing.html", context)
