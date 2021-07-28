@@ -91,6 +91,8 @@
                 </div>
             </div>
             {% endfor %}
+            {% else %}
+            <p class="text-secondary">No comments on this listing.</p>
             {% endif %}
             {% if user.is_authenticated %}
             <form action="{% url 'auctions:listing' listing_id=listing.id %}" method="POST">
