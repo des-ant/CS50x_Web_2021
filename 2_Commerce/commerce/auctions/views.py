@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.db.models import Count
+from django.db.models import Count, Sum, Case, When, IntegerField
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
@@ -145,6 +145,10 @@ def listing(request, listing_id):
     listing_comments = listing_obj.listing_comments.all()
     # Get comment form and pass it to html template
     comment_form = NewCommentForm()
+    # Check that user is creator of listing
+    is_creator = False
+    if request.user == listing_obj.creator:
+        is_creator = True
     context = {
         "listing": listing_obj,
         "bid_form": bid_form,
@@ -153,7 +157,8 @@ def listing(request, listing_id):
         "highest_bid_price": highest_bid_price,
         "watching": watching,
         "comment_form": comment_form,
-        "listing_comments": listing_comments
+        "listing_comments": listing_comments,
+        "is_creator": is_creator
     }
     if request.method == "POST":
         # Check if bid form received
@@ -226,9 +231,18 @@ def watchlist(request):
 
 # List all categories of listings
 def categories(request):
-    all_categories = Category.objects.annotate(num_items=Count("category_items"))
+    # Count number of active listings per Category
+    count_active_categories = Category.objects.annotate(
+        num_items=Sum(
+            Case(
+                When(category_items__is_active=True, then=1),
+                default=0,
+            ),
+            output_field=IntegerField()
+        )
+    )
     context = {
-        "categories": all_categories
+        "categories": count_active_categories
     }
     return render(request, "auctions/categories.html", context)
 
@@ -245,3 +259,17 @@ def category(request, category_id):
         "empty": f"No active listings to display for Category: {category_obj.name}"
     }
     return render(request, "auctions/index.html", context)
+
+
+# Close listing
+def close_listing(request, listing_id):
+    # Return 404 page if listing not found
+    listing_obj = get_object_or_404(Listing, pk=listing_id)
+    # Check that user is creator of listing
+    if request.user == listing_obj.creator:
+        listing_obj.is_active = False
+        listing_obj.save()
+    else:
+        # User is not creator of listing
+        messages.error(request, "Error: must be creator to close listing")
+    return listing(request, listing_id)

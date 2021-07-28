@@ -17,7 +17,8 @@ urlpatterns = [
     path("listing/<int:listing_id>/watch", views.watch, name="watch"),
     path("watchlist", views.watchlist, name="watchlist"),
     path("categories", views.categories, name="categories"),
-    path("categories/<int:category_id>", views.category, name="category")
+    path("categories/<int:category_id>", views.category, name="category"),
+    path("listing/<int:listing_id>/close", views.close_listing, name="close_listing")
 ]
 
 # Make image url accessible
