@@ -29,8 +29,7 @@ class Listing(models.Model):
     watchers = models.ManyToManyField(User, blank=True, related_name="watchlist")
     
     def __str__(self):
-        return (f"{self.id} {self.creator} {self.title} {self.description} {self.image} "
-        f"{self.category} {self.date_created} {self.is_active} {self.price} {self.highest_bid}")
+        return f"{self.id} {self.creator.username} {self.title} {self.is_active} {self.price}"
 
 # Model for bids
 class Bid(models.Model):
@@ -40,7 +39,7 @@ class Bid(models.Model):
     date = models.DateTimeField()
 
     def __str__(self):
-        return f"{self.id} {self.user} {self.listing} {self.price} {self.date}"
+        return f"{self.id} {self.user.username} {self.listing} {self.price}"
 
 # Model for comments made on auction listings
 class Comment(models.Model):
@@ -50,4 +49,4 @@ class Comment(models.Model):
     date = models.DateTimeField()
 
     def __str__(self):
-        return f"{self.id} {self.listing} {self.comment} {self.date}"
+        return f"{self.id} {self.user.username} {self.listing.id} {self.comment}"

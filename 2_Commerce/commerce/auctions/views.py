@@ -89,7 +89,7 @@ def new_listing(request):
     if request.method == "POST":
         # Split form data by model attributes
         category_keys = ["name"]
-        listing_keys = ["title", "description", "price", "image"]
+        listing_keys = ["title", "description", "price"]
         # Function to split data into separate dictionaries based on keys
         filter_by_key = lambda keys: {x: request.POST[x] for x in keys}
         category_data = filter_by_key(category_keys)
@@ -107,8 +107,8 @@ def new_listing(request):
                 category = category_form.save()
             else:
                 return render(request, "auctions/newlisting.html", context)
-        # Check if listing form data is valid
-        listing_form = NewListingForm(listing_data)
+        # Check if listing form data is valid, pass in image file
+        listing_form = NewListingForm(listing_data, request.FILES)
         if listing_form.is_valid():
             new_listing_object = listing_form.save(commit=False)
             # Autofill attributes of new listing objects
@@ -207,6 +207,7 @@ def listing(request, listing_id):
 
 
 # Add or remove from watchlist
+@login_required
 def watch(request, listing_id):
     # Return 404 page if listing not found
     listing_obj = get_object_or_404(Listing, pk=listing_id)
@@ -221,6 +222,7 @@ def watch(request, listing_id):
 
 
 # Show all listings from user's watchlist
+@login_required
 def watchlist(request):
     watchlistings = request.user.watchlist.all()
     context = {
@@ -262,6 +264,7 @@ def category(request, category_id):
 
 
 # Close listing
+@login_required
 def close_listing(request, listing_id):
     # Return 404 page if listing not found
     listing_obj = get_object_or_404(Listing, pk=listing_id)
