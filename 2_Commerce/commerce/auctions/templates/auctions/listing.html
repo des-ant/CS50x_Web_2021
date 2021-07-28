@@ -46,7 +46,7 @@
                     {% if highest_bidder.id == user.id %}
                     Your
                     {% else %}
-                    {{ highest_bidder.username }}'s
+                    <span class="text-primary">{{ highest_bidder.username }}'s</span>
                     {% endif %}
                      bid is the the current bid.
                 {% endif %}
@@ -75,12 +75,40 @@
             {% endif %}
         </div>
     </div>
+    {% else %}
+    <div class="row">
+        <div class="col-10">
+            <h2>$
+                {% if listing.highest_bid %}
+                {{ listing.highest_bid.price }}
+                {% else %}
+                {{ listing.price }}
+                {% endif %}
+            </h2>
+            <p>
+                {{ bidder_count }}
+                {% if bidder_count == 1 %}
+                 bid.
+                {% else %}
+                 bids.
+                {% endif %}
+                {% if highest_bidder %}
+                    {% if highest_bidder.id == user.id %}
+                    Your
+                    {% else %}
+                    <span class="text-primary">{{ highest_bidder.username }}</span>'s
+                    {% endif %}
+                     bid is the the winning bid.
+                {% endif %}
+            </p>
+        </div>
+    </div>
     {% endif %}
     <div class="row">
         <div class="col-10">
             <h3>Details</h3>
             <ul>
-                <li>Listed by: {{ listing.creator.username }}</li>
+                <li>Listed by: <span class="text-primary">{{ listing.creator.username }}</span></li>
                 <li>Category: {{ listing.category.name }}</li>
             </ul>
         </div>
