@@ -1,5 +1,5 @@
 from django import forms
-from .models import Category, Listing, Bid
+from .models import Category, Listing, Bid, Comment
 
 
 class NewCategoryForm(forms.ModelForm):
@@ -48,4 +48,24 @@ class NewBidForm(forms.ModelForm):
         }
         labels = {
             'price': "Enter bid here:"
+        }
+
+
+class NewCommentForm(forms.ModelForm):
+    """
+    New comment form from comment model
+    """
+    class Meta:
+        model = Comment
+        fields = ['comment']
+        # Add classes for bootstrap styling
+        widgets = {
+            'comment': forms.Textarea(attrs={
+                "class": "form-control",
+                "placeholder": "Add a public comment..."
+            }),
+        }
+        # Hide comment label
+        labels = {
+            'comment': ""
         }

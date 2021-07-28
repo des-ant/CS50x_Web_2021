@@ -25,7 +25,9 @@
                     <a class="nav-link" href="{% url 'auctions:categories' %}">Categories</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'auctions:watchlist' %}">Watchlist</a>
+                    <a class="nav-link" href="{% url 'auctions:watchlist' %}">Watchlist
+                    <span class="badge badge-primary badge-pill">{{ user.watchlist.count }}</span>
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'auctions:new_listing' %}">Create Listing</a>

@@ -9,8 +9,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 
-from .models import User, Listing, Category
-from .forms import NewCategoryForm, NewListingForm, NewBidForm
+from .models import User, Listing, Category, Comment
+from .forms import NewCategoryForm, NewListingForm, NewBidForm, NewCommentForm
 
 
 def index(request):
@@ -139,41 +139,65 @@ def listing(request, listing_id):
         highest_bid_price = highest_bid.price
     # Check if listing is part of user's watchlist
     watching = False
-    if request.user.watchlist.filter(pk=listing_id):
+    if request.user.is_authenticated and request.user.watchlist.filter(pk=listing_id):
         watching = True
+    # Get comment data and pass it to html template
+    listing_comments = listing_obj.listing_comments.all()
+    # Get comment form and pass it to html template
+    comment_form = NewCommentForm()
     context = {
         "listing": listing_obj,
         "bid_form": bid_form,
         "bidder_count": bidder_count,
         "highest_bidder": highest_bidder,
         "highest_bid_price": highest_bid_price,
-        "watching": watching
+        "watching": watching,
+        "comment_form": comment_form,
+        "listing_comments": listing_comments
     }
     if request.method == "POST":
-        bid_form = NewBidForm(request.POST)
-        # Check bid form data is valid
-        if bid_form.is_valid():
-            # Make sure bid price is higher than current bid
-            bid_price = bid_form.cleaned_data["price"]
-            min_bid = listing_obj.price
-            # Compare to starting price if no bid placed yet
-            if listing_obj.highest_bid:
-                min_bid = listing_obj.highest_bid.price
-            if bid_price <= min_bid:
-                messages.error(request, "Error: bid must be higher than current price")
+        # Check if bid form received
+        if "price" in request.POST:
+            bid_form = NewBidForm(request.POST)
+            # Check bid form data is valid
+            if bid_form.is_valid():
+                # Make sure bid price is higher than current bid
+                bid_price = bid_form.cleaned_data["price"]
+                min_bid = listing_obj.price
+                # Compare to starting price if no bid placed yet
+                if listing_obj.highest_bid:
+                    min_bid = listing_obj.highest_bid.price
+                if bid_price <= min_bid:
+                    messages.error(request, "Error: bid must be higher than current price")
+                    return render(request, "auctions/listing.html", context)
+                # Bid is valid, autofill attributes then save new bid
+                new_bid_object = bid_form.save(commit=False)
+                new_bid_object.user = request.user
+                new_bid_object.listing = listing_obj
+                new_bid_object.date = datetime.now()
+                new_bid_object.save()
+                # Update highest bid on listing object
+                listing_obj.highest_bid = new_bid_object
+                listing_obj.save()
+                return HttpResponseRedirect(reverse("auctions:listing", args=[listing_id]))
+            else:
+                messages.error(request, "Error: invalid bid")
                 return render(request, "auctions/listing.html", context)
-            # Bid is valid, autofill attributes then save new bid
-            new_bid_object = bid_form.save(commit=False)
-            new_bid_object.user = request.user
-            new_bid_object.listing = listing_obj
-            new_bid_object.date = datetime.now()
-            new_bid_object.save()
-            # Update highest bid on listing object
-            listing_obj.highest_bid = new_bid_object
-            listing_obj.save()
-            return HttpResponseRedirect(reverse("auctions:listing", args=[listing_id]))
-        else:
-            return render(request, "auctions/listing.html", context)
+        # Check if comment form received
+        elif "comment" in request.POST:
+            comment_form = NewCommentForm(request.POST)
+            # Check comment form data is valid
+            if comment_form.is_valid():
+                # Comment is valid, autofill attributes then save new comment
+                new_comment_object = comment_form.save(commit=False)
+                new_comment_object.user = request.user
+                new_comment_object.listing = listing_obj
+                new_comment_object.date = datetime.now()
+                new_comment_object.save()
+                return HttpResponseRedirect(reverse("auctions:listing", args=[listing_id]))
+            else:
+                messages.error(request, "Error: invalid comment")
+                return render(request, "auctions/listing.html", context)
     return render(request, "auctions/listing.html", context)
 
 
@@ -191,8 +215,8 @@ def watch(request, listing_id):
     return listing(request, listing_id)
 
 
+# Show all listings from user's watchlist
 def watchlist(request):
-    # Show all listings from user's watchlist
     watchlistings = request.user.watchlist.all()
     context = {
         "listings": watchlistings
@@ -200,6 +224,7 @@ def watchlist(request):
     return render(request, "auctions/watchlist.html", context)
 
 
+# List all categories of listings
 def categories(request):
     all_categories = Category.objects.annotate(num_items=Count("category_items"))
     context = {
@@ -208,6 +233,7 @@ def categories(request):
     return render(request, "auctions/categories.html", context)
 
 
+# View all active listings in a category
 def category(request, category_id):
     # Return 404 page if category not found
     category_obj = get_object_or_404(Category, pk=category_id)
