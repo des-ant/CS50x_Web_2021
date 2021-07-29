@@ -24,12 +24,12 @@
             </div>
             <div class="col-lg-6 mt-3 mb-2">
               <a href="{% url 'auctions:listing' listing_id=listing.id %}"><h4>{{ listing.title }}</h4></a>
-              <p><b>Price:</b> ${{ listing.price }}</p>
+              <p class="h4">${{ listing.price }}</p>
               <p>{{ listing.description }}</p>
               <p class="text-secondary"><small>Created {{ listing.date_created }}</small></p>
             </div>
           </div>
-          <hr class="">
+          <hr>
           {% endif %}
         {% endfor %}
         {% else %}
