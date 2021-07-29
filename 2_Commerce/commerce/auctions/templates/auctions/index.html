@@ -22,7 +22,7 @@
               </a>
               {% endif %}
             </div>
-            <div class="col-lg-6 mt-3 mb-2">
+            <div class="col mt-3 mb-2">
               <a href="{% url 'auctions:listing' listing_id=listing.id %}"><h4>{{ listing.title }}</h4></a>
               <p class="h4">${{ listing.price }}</p>
               <p>{{ listing.description }}</p>
@@ -33,7 +33,7 @@
           {% endif %}
         {% endfor %}
         {% else %}
-          <div class="row d-flex justify-content-center">
+          <div class="row justify-content-center">
             <div class="col-lg-10 mt-3 mb-2">
               <p class="text-center">{{ empty }}</p>
             </div>

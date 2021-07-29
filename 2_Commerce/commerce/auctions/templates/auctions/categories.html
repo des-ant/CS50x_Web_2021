@@ -1,11 +1,16 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Categories</h2>
     <div class="container">
-      <div class="row">
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <h1 class="h2 mt-3">Categories</h1>
+          <hr class="mt-1">
+        </div>
+      </div>
+      <div class="row justify-content-center">
       {% if categories %}
-        <div class="col-6">
+        <div class="col-lg-6 col-md-9">
           <div class="list-group">
           {% for category in categories %}
             <a href="{% url 'auctions:category' category_id=category.id %}" class="list-group-item list-group-item-action d-flex
@@ -17,8 +22,8 @@
           </div>
         </div>
       {% else %}
-        <div class="col-10">
-          <h4>No categories to display</h4>
+        <div class="col-lg-10 mt-3 mb-2">
+          <p class="text-center">No categories to display</p>
         </div>
       {% endif %}
       </div>

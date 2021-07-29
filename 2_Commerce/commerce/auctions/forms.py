@@ -29,7 +29,7 @@ class NewListingForm(forms.ModelForm):
         # Add classes for bootstrap styling
         widgets = {
             'title': forms.TextInput(attrs={"class": "form-control"}),
-            'description': forms.Textarea(attrs={"class": "form-control"}),
+            'description': forms.Textarea(attrs={"class": "form-control", "rows": "5"}),
             'price': forms.NumberInput(attrs={"class": "form-control"}),
             'image': forms.FileInput(attrs={"class": "form-control"})
         }

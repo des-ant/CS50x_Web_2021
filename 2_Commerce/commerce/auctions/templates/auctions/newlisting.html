@@ -1,39 +1,35 @@
-{% extends "auctions/layout.html" %}
-
-{% block body %}
+{% extends "auctions/layout.html" %} {% block body %}
 <div class="container">
-    <div class="row">
-        <div class="col-10">
-            <h1>Create New Listing</h1>
-        </div>
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <h1 class="h2 mt-3">Create New Listing</h1>
+      <hr class="mt-1">
     </div>
-    {% comment %} <div class="row">
-        <div class="col-10">
-            {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-danger" role="alert">
-                        {{ message }}
-                </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      {% if messages %} {% for message in messages %}
+      <div class="alert alert-danger" role="alert">
+        {{ message }}
+      </div>
+      {% endfor %} {% endif %}
+    </div>
+  </div>
+  <div class="row justify-content-center mt-3">
+    <div class="col-lg-6 col-md-9">
+      <form action="{% url 'auctions:new_listing' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+          {{ listing_form }} {{ category_form }}
+          <datalist id="categories">
+            {% for category in all_categories %}
+              <option value="{{ category.name }}">
             {% endfor %}
-            {% endif %}
+          </datalist>
         </div>
-    </div> {% endcomment %}
-    <div class="row">
-        <div class="col-10">
-            <form action="{% url 'auctions:new_listing' %}" method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="form-group">
-                    {{ listing_form }}
-                    {{ category_form }}
-                    <datalist id="categories">
-                    {% for category in all_categories %}
-                        <option value="{{ category.name }}">
-                    {% endfor %}
-                    </datalist>
-                </div>
-                <input type="submit" class="btn btn-primary">
-            </form>
-        </div>
+        <input type="submit" class="btn btn-primary">
+      </form>
     </div>
+  </div>
 </div>
 {% endblock %}
