@@ -17,135 +17,147 @@
         {% endfor %} {% endif %}
       </div>
     </div>
-    <div class="row">
-        <div class="col-10">
-            <h1>Listing {{ listing.title }}</h1>
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="row">
+          <div class="col-lg-6 d-flex justify-content-center">
             {% if listing.image %}
             <img src="{{ listing.image.url }}" alt="{{ listing.title }}"
             class="img-thumbnail size-400">
             {% endif %}
+          </div>
+          <div class="col">
+            <h3>Description</h3>
             <p>{{ listing.description }}</p>
             <p class="text-secondary"><small>Created {{ listing.date_created }}</small></p>
-        </div>
-    </div>
-    {% if listing.is_active %}
-    <div class="row">
-        <div class="col-10">
-            <h2>$
-                {% if listing.highest_bid %}
-                {{ listing.highest_bid.price }}
-                {% else %}
-                {{ listing.price }}
-                {% endif %}
-            </h2>
-            <p>
-                {{ bidder_count }}
-                {% if bidder_count == 1 %}
-                 bid
-                {% else %}
-                 bids
-                {% endif %}
-                 so far.
-                {% if highest_bidder %}
+            {% if listing.is_active %}
+            <div class="row">
+              <div class="col">
+                <h2>$
+                  {% if listing.highest_bid %}
+                  {{ listing.highest_bid.price }}
+                  {% else %}
+                  {{ listing.price }}
+                  {% endif %}
+                </h2>
+                <p>
+                  {{ bidder_count }}
+                  {% if bidder_count == 1 %}
+                    bid
+                  {% else %}
+                    bids
+                  {% endif %}
+                    so far.
+                </p>
+                <p>
+                  {% if highest_bidder %}
                     {% if highest_bidder.id == user.id %}
                     Your
                     {% else %}
                     <span class="text-primary">{{ highest_bidder.username }}'s</span>
                     {% endif %}
-                     bid is the the current bid.
-                {% endif %}
-            </p>
-            {% if user.is_authenticated %}
-            <form action="{% url 'auctions:listing' listing_id=listing.id %}" method="POST">
-                {% csrf_token %}
-                <div class="form-group">
-                    {{ bid_form }}
+                      bid is the the current bid.
+                  {% endif %}
+                </p>
+              </div>
+              {% if user.is_authenticated %}
+                <div class="col-md-6 pb-2">
+                  <form action="{% url 'auctions:listing' listing_id=listing.id %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{ bid_form }}
+                    </div>
+                    <input type="submit" class="btn btn-primary btn-block" value="Place Bid">
+                  </form>
+                  <a href="{% url 'auctions:watch' listing_id=listing.id %}"
+                  class="btn btn-light btn-block mt-2">
+                    {% if watching %}
+                    Remove from
+                    {% else %}
+                    Add to
+                    {% endif %}
+                    watchlist
+                  </a>
+                    {% if is_creator %}
+                    <a href="{% url 'auctions:close_listing' listing_id=listing.id %}"
+                    class="btn btn-danger btn-block">Close Listing</a>
+                    {% endif %}
                 </div>
-                <input type="submit" class="btn btn-primary" value="Place Bid">
-            </form>
-            <a href="{% url 'auctions:watch' listing_id=listing.id %}"
-            class="btn btn-light">
-                {% if watching %}
-                Remove from
-                {% else %}
-                Add to
-                {% endif %}
-                watchlist
-            </a>
-                {% if is_creator %}
-                <a href="{% url 'auctions:close_listing' listing_id=listing.id %}"
-                class="btn btn-danger">Close Listing</a>
-                {% endif %}
-            {% endif %}
-        </div>
-    </div>
-    {% else %}
-    <div class="row">
-        <div class="col-10">
-            <h2>$
-                {% if listing.highest_bid %}
-                {{ listing.highest_bid.price }}
-                {% else %}
-                {{ listing.price }}
-                {% endif %}
-            </h2>
-            <p>
-                {{ bidder_count }}
-                {% if bidder_count == 1 %}
-                 bid.
-                {% else %}
-                 bids.
-                {% endif %}
-                {% if highest_bidder %}
+              {% endif %}
+            </div>
+            {% else %}
+            <div class="row">
+              <div class="col">
+                <h2>$
+                  {% if listing.highest_bid %}
+                  {{ listing.highest_bid.price }}
+                  {% else %}
+                  {{ listing.price }}
+                  {% endif %}
+                </h2>
+                <p>
+                  {{ bidder_count }}
+                  {% if bidder_count == 1 %}
+                    bid.
+                  {% else %}
+                    bids.
+                  {% endif %}
+                  {% if highest_bidder %}
                     {% if highest_bidder.id == user.id %}
                     Your
                     {% else %}
                     <span class="text-primary">{{ highest_bidder.username }}</span>'s
                     {% endif %}
-                     bid is the the winning bid.
-                {% endif %}
-            </p>
-        </div>
-    </div>
-    {% endif %}
-    <div class="row">
-        <div class="col-10">
-            <h3>Details</h3>
-            <ul>
-                <li>Listed by: <span class="text-primary">{{ listing.creator.username }}</span></li>
-                <li>Category: {{ listing.category.name }}</li>
-            </ul>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-10">
-            <h3>Comments</h3>
-            {% if listing_comments %}
-            {% for comment in listing_comments %}
-            <div class="card">
-                <div class="card-body">
-                    <p class="card-text">{{ comment.comment }}</p>
-                    <p class="text-secondary"><small>By
-                    <span class="text-primary">
-                     {{ comment.user.username }}
-                    </span>
-                     at {{ comment.date }}</small></p>
-                </div>
+                      bid is the the winning bid.
+                  {% endif %}
+                </p>
+              </div>
             </div>
-            {% endfor %}
-            {% else %}
-            <p class="text-secondary">No comments on this listing.</p>
             {% endif %}
-            {% if user.is_authenticated and listing.is_active %}
-            <form action="{% url 'auctions:listing' listing_id=listing.id %}" method="POST">
-                {% csrf_token %}
-                <div class="form-group">
-                    {{ comment_form }}
-                </div>
-                <input type="submit" class="btn btn-primary" value="Post Comment">
-            </form>
-            {% endif %}
+          </div>
         </div>
+      </div>
     </div>
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+      <hr>
+        <h3>Details</h3>
+          <ul>
+            <li>Listed by: <span class="text-primary">{{ listing.creator.username }}</span></li>
+            <li>Category: {{ listing.category.name }}</li>
+          </ul>
+      </div>
+    </div>
+    <div class="row justify-content-center mb-5">
+      <div class="col-lg-10">
+      <hr>
+      <h3>Comments</h3>
+      {% if listing_comments %}
+        {% for comment in listing_comments %}
+      <div class="card mb-4">
+        <div class="card-body">
+          <p class="card-text">{{ comment.comment }}</p>
+          <p class="text-secondary text-right mb-0"><small>By
+          <span class="text-primary">
+            {{ comment.user.username }}
+          </span>
+            at {{ comment.date }}</small></p>
+        </div>
+      </div>
+        {% endfor %}
+      {% else %}
+      <p class="text-secondary">No comments on this listing.</p>
+      {% endif %}
+      {% if user.is_authenticated and listing.is_active %}
+      <form action="{% url 'auctions:listing' listing_id=listing.id %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          {{ comment_form }}
+        </div>
+        <input type="submit" class="btn btn-primary" value="Post Comment">
+      </form>
+      {% endif %}
+    </div>
+  </div>
 </div>
 {% endblock %}

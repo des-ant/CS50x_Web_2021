@@ -4,8 +4,26 @@
 
 .size-200 {
     height: 200px;
+    object-fit: cover;
 }
 
 .size-400 {
-    height: 400px;
+    height: 300px;
+    object-fit: cover;
+}
+
+ /* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    .size-400 {
+        height: 300px;
+        object-fit: cover;
+    }
+ }
+
+ /* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .size-400 {
+        height: 400px;
+        object-fit: cover;
+    }
 }

@@ -62,7 +62,8 @@ class NewCommentForm(forms.ModelForm):
         widgets = {
             'comment': forms.Textarea(attrs={
                 "class": "form-control",
-                "placeholder": "Add a public comment..."
+                "placeholder": "Add a public comment...",
+                "rows": "5"
             }),
         }
         # Hide comment label
