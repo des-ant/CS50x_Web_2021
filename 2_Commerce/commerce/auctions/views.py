@@ -18,7 +18,8 @@ def index(request):
     return render(request, "auctions/index.html", {
         "listings": Listing.objects.all(),
         "title": "Active Listings",
-        "empty": "No active listings to display"
+        "empty": "No active listings to display",
+        "show_inactive": False
     })
 
 
@@ -226,9 +227,12 @@ def watch(request, listing_id):
 def watchlist(request):
     watchlistings = request.user.watchlist.all()
     context = {
-        "listings": watchlistings
+        "listings": watchlistings,
+        "title": "Watchlist",
+        "empty": "Your watchlist is empty",
+        "show_inactive": True
     }
-    return render(request, "auctions/watchlist.html", context)
+    return render(request, "auctions/index.html", context)
 
 
 # List all categories of listings
@@ -257,8 +261,9 @@ def category(request, category_id):
     listings = category_obj.category_items.all()
     context = {
         "listings": listings,
-        "title": f"Active Listings for Category: {category_obj.name}",
-        "empty": f"No active listings to display for Category: {category_obj.name}"
+        "title": f"{category_obj.name}",
+        "empty": f"No active listings to display for {category_obj.name}",
+        "show_inactive": False
     }
     return render(request, "auctions/index.html", context)
 

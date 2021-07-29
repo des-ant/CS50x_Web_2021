@@ -12,7 +12,7 @@
       <div class="col-lg-10">
         {% if listings %}
         {% for listing in listings %}
-          {% if listing.is_active %}
+          {% if listing.is_active or show_inactive %}
           <div class="row">
             <div class="col-lg-4 d-flex justify-content-center">
               {% if listing.image %}
@@ -33,9 +33,9 @@
           {% endif %}
         {% endfor %}
         {% else %}
-          <div class="row">
-            <div class="col-10">
-              <h4>{{ empty }}</h4>
+          <div class="row d-flex justify-content-center">
+            <div class="col-lg-10 mt-3 mb-2">
+              <p class="text-center">{{ empty }}</p>
             </div>
           </div>
         {% endif %}
