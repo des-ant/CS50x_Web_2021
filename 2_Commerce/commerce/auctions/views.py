@@ -185,6 +185,7 @@ def listing(request, listing_id):
                 # Update highest bid on listing object
                 listing_obj.highest_bid = new_bid_object
                 listing_obj.save()
+                messages.success(request, "Your bid has been accepted")
                 return HttpResponseRedirect(reverse("auctions:listing", args=[listing_id]))
             else:
                 messages.error(request, "Error: invalid bid")
@@ -200,6 +201,7 @@ def listing(request, listing_id):
                 new_comment_object.listing = listing_obj
                 new_comment_object.date = datetime.now()
                 new_comment_object.save()
+                messages.success(request, "Your comment has been posted")
                 return HttpResponseRedirect(reverse("auctions:listing", args=[listing_id]))
             else:
                 messages.error(request, "Error: invalid comment")
@@ -216,9 +218,11 @@ def watch(request, listing_id):
     watchlisting = request.user.watchlist.filter(pk=listing_id).first()
     if watchlisting:
         request.user.watchlist.remove(watchlisting)
+        messages.success(request, "Item has been removed from watchlist")
     else:
         # Add to watchlist if not already added
         request.user.watchlist.add(listing_obj)
+        messages.success(request, "Item has been added to watchlist")
     return listing(request, listing_id)
 
 
