@@ -18,10 +18,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'auctions:index' %}">Active Listings</a>
                 </li>
-            {% if user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'auctions:categories' %}">Categories</a>
                 </li>
+            {% if user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'auctions:watchlist' %}">Watchlist
                     <span class="badge badge-primary badge-pill">{{ user.watchlist.count }}</span>

@@ -266,8 +266,10 @@ def category(request, category_id):
     category_obj = get_object_or_404(Category, pk=category_id)
     # Filter listings by category
     listings = category_obj.category_items.all()
+    # Get active listings from category
+    active_listings = listings.filter(is_active=True)
     context = {
-        "listings": listings,
+        "listings": active_listings,
         "title": f"{category_obj.name}",
         "empty": f"No active listings to display for {category_obj.name}",
         "show_inactive": False
