@@ -107,6 +107,7 @@ def new_listing(request):
             if category_form.is_valid():
                 category = category_form.save()
             else:
+                messages.error(request, "Error: could not create category")
                 return render(request, "auctions/newlisting.html", context)
         # Check if listing form data is valid, pass in image file
         listing_form = NewListingForm(listing_data, request.FILES)
@@ -118,8 +119,10 @@ def new_listing(request):
             new_listing_object.date_created = datetime.now()
             new_listing_object.is_active = True
             new_listing_object.save()
-            return HttpResponseRedirect(reverse("auctions:index"))
+            messages.success(request, "New listing has been created")
+            return HttpResponseRedirect(reverse("auctions:listing", args=[new_listing_object.id]))
         else:
+            messages.error(request, "Error: could not create listing")
             return render(request, "auctions/newlisting.html", context)
     return render(request, "auctions/newlisting.html", context)
 
@@ -281,7 +284,8 @@ def close_listing(request, listing_id):
     if request.user == listing_obj.creator:
         listing_obj.is_active = False
         listing_obj.save()
+        messages.success(request, "Listing has been closed")
     else:
         # User is not creator of listing
         messages.error(request, "Error: must be creator to close listing")
-    return listing(request, listing_id)
+    return HttpResponseRedirect(reverse("auctions:listing", args=[listing_id]))
