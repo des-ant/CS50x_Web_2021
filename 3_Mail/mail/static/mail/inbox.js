@@ -22,14 +22,14 @@ function compose_email() {
   document.querySelector('#compose-body').value = '';
 
   // Send POST request to API when form is submitted
-  document.querySelector('#compose-form').onsubmit = () => {
+  document.querySelector('#compose-form').onsubmit = async () => {
     // Get form data
     const recipients = document.querySelector('#compose-recipients').value;
     const subject = document.querySelector('#compose-subject').value;
     const body = document.querySelector('#compose-body').value;
 
-    // Post email data to API
-    post_email(recipients, subject, body);
+    // Post email data to API, wait for database to be updated
+    await post_email(recipients, subject, body)
 
     // Load user's sent mailbox
     load_mailbox('sent');
@@ -98,7 +98,8 @@ function get_email(email_id) {
 
 function post_email(recipients, subject, body) {
 
-  fetch('/emails', {
+  // Return promise after posting to API
+  return fetch('/emails', {
     method: 'POST',
     body: JSON.stringify({
       recipients: recipients,
