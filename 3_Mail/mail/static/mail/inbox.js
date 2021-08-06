@@ -20,6 +20,23 @@ function compose_email() {
   document.querySelector('#compose-recipients').value = '';
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
+
+  // Send POST request to API when form is submitted
+  document.querySelector('#compose-form').onsubmit = () => {
+    // Get form data
+    const recipients = document.querySelector('#compose-recipients').value;
+    const subject = document.querySelector('#compose-subject').value;
+    const body = document.querySelector('#compose-body').value;
+
+    // Post email data to API
+    post_email(recipients, subject, body);
+
+    // Load user's sent mailbox
+    load_mailbox('sent');
+
+    // Stop form from submitting and redirecting page
+    return false;
+  }
 }
 
 function load_mailbox(mailbox) {
@@ -81,7 +98,7 @@ function get_email(email_id) {
 
 function post_email(recipients, subject, body) {
 
-  return fetch('/emails', {
+  fetch('/emails', {
     method: 'POST',
     body: JSON.stringify({
       recipients: recipients,
