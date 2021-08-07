@@ -62,24 +62,40 @@ function get_mailbox(mailbox) {
     // Print emails
     console.log(emails);
 
-    // ... do something else with emails ...
+    // Create boostrap container and add it to template div
+    const container = document.createElement('div');
+    container.classList.add("container");
+    const emailDiv = document.querySelector('#emails-view');
+    emailDiv.append(container);
+    const containerDiv = emailDiv.querySelector('.container');
+
     // Check if emails array is empty or not
     if (Array.isArray(emails) && emails.length) {
       // Loop over items in mailbox and display them
       emails.forEach(email => {
-        const element = document.createElement('div');
-        element.innerHTML = email["id"] + " " + email["body"];
-        element.addEventListener('click', function() {
+        // Create bootstrap row
+        const row = document.createElement('div');
+        row.classList.add("row","border");
+        // Toggle action when row is clicked
+        row.addEventListener('click', function() {
           console.log('This element has been clicked!')
         });
-        // Add email to template
-        document.querySelector('#emails-view').append(element);
+        // Add row to container div
+        containerDiv.append(row);
+        // Should display author, subject, timestamp
+        rowData = [email["sender"], email["subject"], email["timestamp"]];
+        // Create column for each email attribute
+        rowData.forEach(colData => {
+          // Create bootstrap column
+          const col = document.createElement('div');
+          col.classList.add("col");
+          col.innerHTML = colData;
+          // Add column to newly creeated row div
+          row.append(col);
+        });
       });
     } else {
-      const element = document.createElement('div');
-      element.innerHTML = "Mailbox is empty";
-      // Add div to template
-      document.querySelector('#emails-view').append(element);
+      containerDiv.innerHTML = "Mailbox is empty";
     }
   });
 }
