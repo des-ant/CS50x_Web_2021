@@ -29,7 +29,11 @@ function compose_email() {
     const body = document.querySelector('#compose-body').value;
 
     // Post email data to API, wait for database to be updated
-    await post_email(recipients, subject, body)
+    try {
+      await post_email(recipients, subject, body);
+    } catch(e) {
+      console.log(e);
+    }
 
     // Load user's sent mailbox
     load_mailbox('sent');
@@ -93,20 +97,23 @@ function get_mailbox(mailbox) {
         rowData = ["sender", "subject", "timestamp"];
         // Create object to give unique styling to each column
         colClass = {
-          "sender": "col-md-3",
-          "subject": "col",
+          "sender": ["col-md-3", "text-md-left"],
+          "subject": ["col"],
           "timestamp": ["col-md-3", "text-md-right"]
         };
         // Create column for each email attribute
         rowData.forEach(colData => {
           // Create bootstrap column
           const col = document.createElement('div');
-          col.classList.add(colClass[colData]);
-          // Give timestamp smaller text
-          if (colData === "timestamp") {
-            col.innerHTML = `<small class="text-secondary">${email[colData]}</small>`;
+          // Add multiple classes using spread syntax
+          col.classList.add(...colClass[colData]);
+          // Add styling to text in different columns
+          if (colData === "sender") {
+            col.innerHTML = `<p class="font-weight-bold mb-0">${email[colData]}</p>`;
+          } else if (colData === "timestamp") {
+            col.innerHTML = `<p class="mb-0"><small class="text-secondary">${email[colData]}</small></p>`;
           } else {
-            col.innerHTML = email[colData];
+            col.innerHTML = `<p class="mb-0">${email[colData]}</p>`;
           }
           // Add column to newly creeated row div
           row.append(col);
