@@ -75,7 +75,14 @@ function get_mailbox(mailbox) {
       emails.forEach(email => {
         // Create bootstrap row
         const row = document.createElement('div');
-        row.classList.add("row","border");
+        row.classList.add("row", "border", "email-box", "align-items-center");
+        // If email is read, give it a grey background
+        // Otherwise give it a white background
+        if (email["read"]) {
+          row.classList.add("bg-light");
+        } else {
+          row.classList.add("bg-white");
+        }
         // Toggle action when row is clicked
         row.addEventListener('click', function() {
           console.log('This element has been clicked!')
@@ -83,13 +90,24 @@ function get_mailbox(mailbox) {
         // Add row to container div
         containerDiv.append(row);
         // Should display author, subject, timestamp
-        rowData = [email["sender"], email["subject"], email["timestamp"]];
+        rowData = ["sender", "subject", "timestamp"];
+        // Create object to give unique styling to each column
+        colClass = {
+          "sender": "col-md-3",
+          "subject": "col",
+          "timestamp": ["col-md-3", "text-md-right"]
+        };
         // Create column for each email attribute
         rowData.forEach(colData => {
           // Create bootstrap column
           const col = document.createElement('div');
-          col.classList.add("col");
-          col.innerHTML = colData;
+          col.classList.add(colClass[colData]);
+          // Give timestamp smaller text
+          if (colData === "timestamp") {
+            col.innerHTML = `<small class="text-secondary">${email[colData]}</small>`;
+          } else {
+            col.innerHTML = email[colData];
+          }
           // Add column to newly creeated row div
           row.append(col);
         });
