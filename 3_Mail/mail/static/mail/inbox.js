@@ -66,7 +66,7 @@ function get_mailbox(mailbox) {
   .then(response => response.json())
   .then(emails => {
     // Print emails
-    console.log(emails);
+    // console.log(emails);
 
     // Container is template div
     const container = document.querySelector('#emails-view');
@@ -87,8 +87,15 @@ function get_mailbox(mailbox) {
           row.classList.add("bg-white");
         }
 
-        // Go to email view when row is clicked
-        row.addEventListener('click', () => get_email(email["id"]));
+        // Mark email as read and go to email view when row is clicked
+        row.addEventListener('click', async () => {
+          try {
+            await mark_email(email["id"], {read: true});
+          } catch(e) {
+            console.log(e);
+          }
+          get_email(email["id"]);
+        });
         // Add row to container div
         container.append(row);
 
@@ -138,7 +145,7 @@ function get_email(email_id) {
   .then(response => response.json())
   .then(email => {
     // Print email
-    console.log(email);
+    // console.log(email);
 
     // Container is template div
     const container = document.querySelector('#single-email-view');
@@ -186,7 +193,7 @@ function get_email(email_id) {
 
     // Add archive button and functionality
     const archiveBtn = document.createElement('button');
-    archiveBtn.classList.add("btn", "btn-sm", "btn-outline-primary");
+    archiveBtn.classList.add("btn", "btn-sm", "btn-outline-primary", "mr-1");
     // Allow user to unarchive email if email is archived
     const modification = {};
     if (email["archived"]) {
@@ -196,8 +203,39 @@ function get_email(email_id) {
       archiveBtn.innerHTML = "Archive";
       modification.archived = true;
     }
-    archiveBtn.addEventListener('click', () => mark_email(email_id, modification, true));
+    archiveBtn.addEventListener('click', async () => {
+      try {
+        await mark_email(email_id, modification);
+      } catch(e) {
+        console.log(e);
+      }
+      // Redirect to inbox one email is archived
+      load_mailbox('inbox');
+    });
     container.append(archiveBtn);
+
+    // Add unread button and functionality
+    const unreadBtn = document.createElement('button');
+    unreadBtn.classList.add("btn", "btn-sm", "btn-outline-primary");
+    const modification2 = {};
+    if (email["read"]) {
+      unreadBtn.innerHTML = "Mark as unread";
+      modification2.read = false;
+    } else {
+      unreadBtn.innerHTML = "Mark as read";
+      modification2.read = true;
+    }
+    // Mark email as unread and redirect to inbox
+    unreadBtn.addEventListener('click', async () => {
+      try {
+        await mark_email(email_id, modification2);
+      } catch(e) {
+        console.log(e);
+      }
+      // Reload page once email is unread
+      get_email(email_id);
+    });
+    container.append(unreadBtn);
 
     // Add horizontal rule
     const hr = document.createElement('hr');
@@ -234,20 +272,15 @@ function post_email(recipients, subject, body) {
   .then(response => response.json())
   .then(result => {
     // Print result
-    console.log(result);
+    // console.log(result);
   });
 }
 
-async function mark_email(email_id, modification, redirect) {
+function mark_email(email_id, modification) {
 
   // Send put request to email view
-  await fetch(`/emails/${email_id}`, {
+  return fetch(`/emails/${email_id}`, {
     method: 'PUT',
     body: JSON.stringify(modification)
   });
-
-  // Redirect to inbox if necessary
-  if (redirect) {
-    load_mailbox('inbox');
-  }
 }
