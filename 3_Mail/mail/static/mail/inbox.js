@@ -68,11 +68,8 @@ function get_mailbox(mailbox) {
     // Print emails
     console.log(emails);
 
-    // Create boostrap container and add it to template div
-    const container = document.createElement('div');
-    container.classList.add("container");
-    const emailDiv = document.querySelector('#emails-view');
-    emailDiv.append(container);
+    // Container is template div
+    const container = document.querySelector('#emails-view');
 
     // Check if emails array is empty or not
     if (Array.isArray(emails) && emails.length) {
@@ -143,11 +140,8 @@ function get_email(email_id) {
     // Print email
     console.log(email);
 
-    // Create boostrap container and add it to template div
-    const container = document.createElement('div');
-    container.classList.add("container");
-    const emailDiv = document.querySelector('#single-email-view');
-    emailDiv.append(container);
+    // Container is template div
+    const container = document.querySelector('#single-email-view');
 
     // Create bootstrap row
     const row = document.createElement('div');
@@ -180,7 +174,7 @@ function get_email(email_id) {
     // Add reply button and functionality
     const replyBtn = document.createElement('button');
     replyBtn.innerHTML = "Reply";
-    replyBtn.classList.add("btn", "btn-sm", "btn-outline-primary");
+    replyBtn.classList.add("btn", "btn-sm", "btn-outline-primary", "mr-1");
     // Pre-fill form in reply email
     const prefilledVals = {
       recVal: email["sender"],
@@ -189,6 +183,21 @@ function get_email(email_id) {
     };
     replyBtn.addEventListener('click', () => compose_email(prefilledVals));
     container.append(replyBtn);
+
+    // Add archive button and functionality
+    const archiveBtn = document.createElement('button');
+    archiveBtn.classList.add("btn", "btn-sm", "btn-outline-primary");
+    // Allow user to unarchive email if email is archived
+    const modification = {};
+    if (email["archived"]) {
+      archiveBtn.innerHTML = "Unarchive";
+      modification["archived"] = false;
+    } else {
+      archiveBtn.innerHTML = "Archive";
+      modification["archived"] = true;
+    }
+    archiveBtn.addEventListener('click', () => mark_email(email_id, modification));
+    container.append(archiveBtn);
 
     // Add horizontal rule
     const hr = document.createElement('hr');
@@ -231,7 +240,8 @@ function post_email(recipients, subject, body) {
 
 function mark_email(email_id, modification) {
 
-  return fetch(`/email/${email_id}`, {
+  // Send put request to email view
+  fetch(`/email/${email_id}`, {
     method: 'PUT',
     body: JSON.stringify(modification)
   });
