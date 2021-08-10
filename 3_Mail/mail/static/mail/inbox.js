@@ -15,6 +15,7 @@ function compose_email() {
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
+  document.querySelector('#single-email-view').style.display = 'none';
 
   // Clear out composition fields
   document.querySelector('#compose-recipients').value = '';
@@ -48,6 +49,7 @@ function load_mailbox(mailbox) {
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#single-email-view').style.display = 'none';
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
@@ -71,7 +73,6 @@ function get_mailbox(mailbox) {
     container.classList.add("container");
     const emailDiv = document.querySelector('#emails-view');
     emailDiv.append(container);
-    const containerDiv = emailDiv.querySelector('.container');
 
     // Check if emails array is empty or not
     if (Array.isArray(emails) && emails.length) {
@@ -79,7 +80,8 @@ function get_mailbox(mailbox) {
       emails.forEach(email => {
         // Create bootstrap row
         const row = document.createElement('div');
-        row.classList.add("row", "border", "email-box", "align-items-center");
+        row.classList.add("row", "border", "email-box", "align-items-center", "popout");
+
         // If email is read, give it a grey background
         // Otherwise give it a white background
         if (email["read"]) {
@@ -87,12 +89,12 @@ function get_mailbox(mailbox) {
         } else {
           row.classList.add("bg-white");
         }
-        // Toggle action when row is clicked
-        row.addEventListener('click', function() {
-          console.log('This element has been clicked!')
-        });
+
+        // Go to email view when row is clicked
+        row.addEventListener('click', () => get_email(email["id"]));
         // Add row to container div
-        containerDiv.append(row);
+        container.append(row);
+
         // Should display author, subject, timestamp
         rowData = ["sender", "subject", "timestamp"];
         // Create object to give unique styling to each column
@@ -101,6 +103,7 @@ function get_mailbox(mailbox) {
           "subject": ["col"],
           "timestamp": ["col-md-3", "text-md-right"]
         };
+
         // Create column for each email attribute
         rowData.forEach(colData => {
           // Create bootstrap column
@@ -120,20 +123,54 @@ function get_mailbox(mailbox) {
         });
       });
     } else {
-      containerDiv.innerHTML = "Mailbox is empty";
+      container.innerHTML = "Mailbox is empty";
     }
   });
 }
 
 function get_email(email_id) {
 
-  return fetch(`/emails/${email_id}`)
+  // Show the mailbox and hide other views
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'none';
+  // Clear email view
+  document.querySelector('#single-email-view').innerHTML = '';
+  document.querySelector('#single-email-view').style.display = 'block';
+
+  fetch(`/emails/${email_id}`)
   .then(response => response.json())
   .then(email => {
     // Print email
     console.log(email);
 
-    // ... do something else with email ...
+    // Create boostrap container and add it to template div
+    const container = document.createElement('div');
+    container.classList.add("container");
+    const emailDiv = document.querySelector('#single-email-view');
+    emailDiv.append(container);
+
+    // Create bootstrap row
+    const row = document.createElement('div');
+    row.classList.add("row");
+    // Add row to container div
+    container.append(row);
+
+    // Create bootstrap column
+    const col = document.createElement('div');
+    col.classList.add("col-md-10");
+    row.append(col);
+
+    // Email attribute to display
+    emailData = ["sender", "recipients", "subject", "timestamp", "body"];
+
+    emailData.forEach(value => {
+      // Create paragraph for each attribute
+      const para = document.createElement("p");
+      para.append(`${email[value]}`);
+      col.append(para);
+    });
+
+
   });
 }
 

@@ -2,6 +2,15 @@ textarea {
     min-height: 400px;
 }
 
+/* Constrain height of row in mailbox */
 .email-box {
     height: 2rem;
+}
+
+/* Make div pop out on hover */
+.popout:hover {
+    cursor: pointer;
+    position:relative;
+    box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgb(60 64 67 / 30%), 0 1px 3px 1px rgb(60 64 67 / 15%);
+    z-index: 2;
 }
