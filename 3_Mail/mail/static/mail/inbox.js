@@ -191,12 +191,12 @@ function get_email(email_id) {
     const modification = {};
     if (email["archived"]) {
       archiveBtn.innerHTML = "Unarchive";
-      modification["archived"] = false;
+      modification.archived = false;
     } else {
       archiveBtn.innerHTML = "Archive";
-      modification["archived"] = true;
+      modification.archived = true;
     }
-    archiveBtn.addEventListener('click', () => mark_email(email_id, modification));
+    archiveBtn.addEventListener('click', () => mark_email(email_id, modification, true));
     container.append(archiveBtn);
 
     // Add horizontal rule
@@ -238,11 +238,16 @@ function post_email(recipients, subject, body) {
   });
 }
 
-function mark_email(email_id, modification) {
+async function mark_email(email_id, modification, redirect) {
 
   // Send put request to email view
-  fetch(`/email/${email_id}`, {
+  await fetch(`/emails/${email_id}`, {
     method: 'PUT',
     body: JSON.stringify(modification)
   });
+
+  // Redirect to inbox if necessary
+  if (redirect) {
+    load_mailbox('inbox');
+  }
 }
