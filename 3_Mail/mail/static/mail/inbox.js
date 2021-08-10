@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
   load_mailbox('inbox');
 });
 
-function compose_email() {
+function compose_email({recVal = '', subVal = '', bodyVal = ''} = {}) {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
@@ -18,9 +18,9 @@ function compose_email() {
   document.querySelector('#single-email-view').style.display = 'none';
 
   // Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
+  document.querySelector('#compose-recipients').value = recVal;
+  document.querySelector('#compose-subject').value = subVal;
+  document.querySelector('#compose-body').value = bodyVal;
 
   // Send POST request to API when form is submitted
   document.querySelector('#compose-form').onsubmit = async () => {
@@ -96,9 +96,9 @@ function get_mailbox(mailbox) {
         container.append(row);
 
         // Should display author, subject, timestamp
-        rowData = ["sender", "subject", "timestamp"];
+        const rowData = ["sender", "subject", "timestamp"];
         // Create object to give unique styling to each column
-        colClass = {
+        const colClass = {
           "sender": ["col-md-3", "text-md-left"],
           "subject": ["col"],
           "timestamp": ["col-md-3", "text-md-right"]
@@ -152,7 +152,6 @@ function get_email(email_id) {
     // Create bootstrap row
     const row = document.createElement('div');
     row.classList.add("row");
-    // Add row to container div
     container.append(row);
 
     // Create bootstrap column
@@ -161,16 +160,54 @@ function get_email(email_id) {
     row.append(col);
 
     // Email attribute to display
-    emailData = ["sender", "recipients", "subject", "timestamp", "body"];
+    const emailData = ["sender", "recipients", "subject", "timestamp"];
+    // Object for email tags
+    const emailTags = {
+      "sender": "From",
+      "recipients": "To",
+      "subject": "Subject",
+      "timestamp": "Timestamp"
+    };
 
     emailData.forEach(value => {
       // Create paragraph for each attribute
       const para = document.createElement("p");
+      para.innerHTML = `<span class="font-weight-bold">${emailTags[value]}: </span>`;
       para.append(`${email[value]}`);
       col.append(para);
     });
 
+    // Add reply button and functionality
+    const replyBtn = document.createElement('button');
+    replyBtn.innerHTML = "Reply";
+    replyBtn.classList.add("btn", "btn-sm", "btn-outline-primary");
+    // Pre-fill form in reply email
+    const prefilledVals = {
+      recVal: email["sender"],
+      subVal: `Re: ${email["subject"]}`,
+      bodyVal: `On ${email["timestamp"]} ${email["sender"]} wrote: \r\n> ${email["body"].replace(/\n/g, "\n> ")}\n\n`
+    };
+    replyBtn.addEventListener('click', () => compose_email(prefilledVals));
+    container.append(replyBtn);
 
+    // Add horizontal rule
+    const hr = document.createElement('hr');
+    container.append(hr);
+
+    // Create second bootstrap row
+    const row2 = document.createElement('div');
+    row2.classList.add("row");
+    container.append(row2);
+
+    // Create second bootstrap column
+    const col2 = document.createElement('div');
+    col2.classList.add("col-md-10");
+    row2.append(col2);
+    const para2 = document.createElement("p");
+    // Preserve white space in email body text
+    para2.style.whiteSpace = "pre-line";
+    para2.append(`${email["body"]}`);
+    col2.append(para2);
   });
 }
 
