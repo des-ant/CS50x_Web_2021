@@ -66,7 +66,7 @@ function get_mailbox(mailbox) {
   .then(response => response.json())
   .then(emails => {
     // Print emails
-    // console.log(emails);
+    console.log(emails);
 
     // Container is template div
     const container = document.querySelector('#emails-view');
@@ -127,7 +127,14 @@ function get_mailbox(mailbox) {
         });
       });
     } else {
-      container.innerHTML = "Mailbox is empty";
+      // Create bootstrap row
+      const row1 = document.createElement('div');
+      row1.classList.add("row");
+      const col1 = document.createElement('div');
+      col1.classList.add("col");
+      col1.innerHTML = "<p>Mailbox is empty</p>";
+      row1.append(col1);
+      container.append(row1);
     }
   });
 }
