@@ -157,7 +157,7 @@ function get_email(email_id) {
 
     // Create bootstrap column
     const col = document.createElement('div');
-    col.classList.add("col-md-10");
+    col.classList.add("col");
     row.append(col);
 
     // Email attribute to display
