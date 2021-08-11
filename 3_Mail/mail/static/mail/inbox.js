@@ -23,21 +23,14 @@ function compose_email({recVal = '', subVal = '', bodyVal = ''} = {}) {
   document.querySelector('#compose-body').value = bodyVal;
 
   // Send POST request to API when form is submitted
-  document.querySelector('#compose-form').onsubmit = async () => {
+  document.querySelector('#compose-form').onsubmit = () => {
     // Get form data
     const recipients = document.querySelector('#compose-recipients').value;
     const subject = document.querySelector('#compose-subject').value;
     const body = document.querySelector('#compose-body').value;
 
     // Post email data to API, wait for database to be updated
-    try {
-      await post_email(recipients, subject, body);
-    } catch(e) {
-      console.log(e);
-    }
-
-    // Load user's sent mailbox
-    load_mailbox('sent');
+    post_email(recipients, subject, body);
 
     // Stop form from submitting and redirecting page
     return false;
@@ -66,7 +59,7 @@ function get_mailbox(mailbox) {
   .then(response => response.json())
   .then(emails => {
     // Print emails
-    console.log(emails);
+    // console.log(emails);
 
     // Container is template div
     const container = document.querySelector('#emails-view');
@@ -192,8 +185,13 @@ function get_email(email_id) {
     // Pre-fill form in reply email
     const prefilledVals = {
       recVal: email["sender"],
-      subVal: `Re: ${email["subject"]}`,
       bodyVal: `On ${email["timestamp"]} ${email["sender"]} wrote: \r\n> ${email["body"].replace(/\n/g, "\n> ")}\n\n`
+    };
+    // If subject line begins with Re:, dont add it again
+    if (email["subject"].startsWith("Re: ")) {
+      prefilledVals.subVal = email["subject"];
+    } else {
+      prefilledVals.subVal = `Re: ${email["subject"]}`;
     };
     replyBtn.addEventListener('click', () => compose_email(prefilledVals));
     container.append(replyBtn);
@@ -268,7 +266,7 @@ function get_email(email_id) {
 function post_email(recipients, subject, body) {
 
   // Return promise after posting to API
-  return fetch('/emails', {
+  fetch('/emails', {
     method: 'POST',
     body: JSON.stringify({
       recipients: recipients,
@@ -280,6 +278,9 @@ function post_email(recipients, subject, body) {
   .then(result => {
     // Print result
     // console.log(result);
+
+    // Load user's sent mailbox
+    load_mailbox('sent');
   });
 }
 
