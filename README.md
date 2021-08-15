@@ -1,6 +1,6 @@
 # CS50’s Web Programming with Python and JavaScript
 
-## 0. Search
+## 0. Search 
 
 **Task**: Design a front-end for Google Search, Google Image Search, and Google Advanced Search.
 
@@ -21,6 +21,8 @@
 
 **Frameworks and languages**: Django (Python), HTML, CSS, Bootstrap
 
+[View Project](1_Wiki/)
+
 [Reference](https://cs50.harvard.edu/web/2020/projects/1/wiki/)
 
 ### Video Demo
@@ -34,6 +36,8 @@
 
 **Frameworks and languages**: Django (Python), Bootstrap, CSS, HTML
 
+[View Project](2_Commerce/)
+
 [Reference](https://cs50.harvard.edu/web/2020/projects/2/commerce/)
 
 ### Video Demo
@@ -46,6 +50,8 @@
 **Task**: Design a front-end for an email client that makes API calls to send and receive emails.
 
 **Frameworks and languages**: JavaScript, Bootstrap, CSS, Django (Python), HTML
+
+[View Project](4_Network/)
 
 [Reference](https://cs50.harvard.edu/web/2020/projects/3/mail/)
 
