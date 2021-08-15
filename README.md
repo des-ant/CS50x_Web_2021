@@ -6,6 +6,8 @@
 
 **Frameworks and languages**: SCSS, HTML
 
+[View Project](0_Search/README.md)
+
 [Reference](https://cs50.harvard.edu/web/2020/projects/0/search/)
 
 ### Video Demo
