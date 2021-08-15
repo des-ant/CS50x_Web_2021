@@ -51,7 +51,7 @@
 
 **Frameworks and languages**: JavaScript, Bootstrap, CSS, Django (Python), HTML
 
-[View Project](4_Network/)
+[View Project](3_Mail/)
 
 [Reference](https://cs50.harvard.edu/web/2020/projects/3/mail/)
 
