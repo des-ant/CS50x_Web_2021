@@ -6,7 +6,7 @@
 
 **Frameworks and languages**: SCSS, HTML
 
-[View Project](0_Search/README.md)
+[View Project](0_Search/)
 
 [Reference](https://cs50.harvard.edu/web/2020/projects/0/search/)
 
