@@ -2,7 +2,7 @@
 
 **Task**: Design a front-end for an email client that makes API calls to send and receive emails.
 
-**Frameworks and languages**: JavaScript, Bootstrap, CSS, Django (Python)
+**Frameworks and languages**: JavaScript, Bootstrap, CSS, Django (Python), HTML
 
 [Reference](https://cs50.harvard.edu/web/2020/projects/3/mail/)
 
