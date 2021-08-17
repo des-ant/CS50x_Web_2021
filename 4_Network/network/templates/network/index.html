@@ -1,5 +1,24 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    TODO
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <h2>All Posts</h2>
+      <div class="card">
+        <div class="card-body">
+          <form id="new-post-form">
+            <div class="form-group">
+              <h5>New Post</h5>
+              <textarea class="form-control" id="new-post-body" placeholder="Say something"></textarea>
+            </div>
+            <input type="submit" class="btn btn-primary" value="Post"/>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
